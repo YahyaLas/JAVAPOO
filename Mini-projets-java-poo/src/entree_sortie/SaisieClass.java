@@ -1,4 +1,4 @@
-package saisie;
+package entree_sortie;
 
 import java.util.Scanner;
 
