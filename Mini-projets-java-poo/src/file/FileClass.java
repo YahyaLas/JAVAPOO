@@ -1,11 +1,15 @@
 package file;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import constants.ConstantMsgClass;
-import saisie.SaisieClass;
+import entree_sortie.AffichageClass;
+import entree_sortie.SaisieClass;
 
 public class FileClass {
 
@@ -24,12 +28,12 @@ public class FileClass {
 			for (int i = 0; i < contenu.length; i++) {
 				File f2 = new File(rep, contenu[i]);
 				if (f2.isDirectory())
-					System.out.println("REP : " + contenu[i]);
+					AffichageClass.afficheConsole("REP : " + contenu[i]);
 				else
-					System.out.println("Fichier :" + contenu[i] + "Size:" + contenu[i].length());
+					AffichageClass.afficheConsole("Fichier :" + contenu[i] + "Size:" + contenu[i].length());
 			}
 		} else {
-			System.out.println(rep + " n'existe pas");
+			AffichageClass.afficheConsole(rep + " n'existe pas");
 		}
 	}
 
@@ -79,24 +83,66 @@ public class FileClass {
 		File f = new File(rep);
 		if (f.exists()) {
 			String[] contenu = f.list();
-			if (contenu == null) 
-				return;
+			if (contenu == null) {
+				exitVoidMethode();
+			}
 			List<String> listDirectory = new ArrayList<String>();
 			for (int i = 0; i < contenu.length; i++) {
 				File f2 = new File(rep, contenu[i]);
 				if (f2.isDirectory()) {
 					listDirectory.add(contenu[i]);
 				} else
-					System.out.println(espace + "Fichier : " + contenu[i] + "Size : " + contenu[i].length());
+					AffichageClass.afficheConsole(espace + "Fichier : " + contenu[i] + "Size : " + contenu[i].length());
 			}
 			for (String elem : listDirectory) {
-				System.out.println(espace + "REP : " + elem);
+				AffichageClass.afficheConsole(espace + "REP : " + elem);
 				afficheContenuComprisSousReprtoires(espace + "\t", rep + "/" + elem);
 			}
 		} else {
-			System.out.println(rep + " n'existe pas");
+			AffichageClass.afficheConsole(rep + " n'existe pas");
 		}
 
+	}
+
+	/**
+	 * Copier le contenu du fichier path1 dans le fichier path2 (si le fichier path2
+	 * est inexistant il va être créer si il existe son contenu va être écraser )
+	 * 
+	 * @param path1
+	 * @param path2
+	 * @throws IOException
+	 */
+	public static void copierFichierTextDansUnAutre(String path1, String path2) throws IOException {
+		File f1 = new File("ressources/File1.txt");
+		if (!f1.exists() && !f1.isDirectory()) {
+			if (!f1.exists())
+				AffichageClass.afficheConsole("File don't exist " + path1);
+			else
+				AffichageClass.afficheConsole("Is not file");
+			exitVoidMethode();
+		}
+		FileReader fr = new FileReader(f1);
+		File f2 = new File("ressources/File2.txt");
+		if (!f2.exists()) {
+			AffichageClass.afficheConsole("File or directory don't exist " + path2);
+			exitVoidMethode();
+		}
+		FileWriter fw = new FileWriter(f2);
+		int c;
+		while ((c = fr.read()) != -1) {
+			fw.write(c);
+		}
+		fr.close();
+		fw.close();
+		AffichageClass.afficheConsole(
+				"Contenu du fichier : " + f1.getName() + " est bien copier dans le fichier : " + f2.getName());
+	}
+
+	/**
+	 * Sortir d'une méthode qui retourne void
+	 */
+	private static void exitVoidMethode() {
+		return;
 	}
 
 }
