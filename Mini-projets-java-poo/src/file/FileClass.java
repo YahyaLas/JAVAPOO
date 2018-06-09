@@ -1,20 +1,20 @@
 package file;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import constants.ConstantLimitClass;
 import constants.ConstantMsgClass;
 import entree_sortie.AffichageClass;
 import entree_sortie.SaisieClass;
 
 public class FileClass {
+
 	
-	private static final int ITERATION_LIMITE = 9999999;
 
 	/**
 	 * Affiche le contenu d’un répertoire en affichant si les éléments de ce
@@ -149,8 +149,9 @@ public class FileClass {
 	}
 
 	/**
-	 * Copier le contenu du fichier path1 dans le fichier path2 avec cryptage (si le fichier path2
-	 * est inexistant il va être créer si il existe son contenu va être écraser )
+	 * Copier le contenu du fichier path1 dans le fichier path2 avec cryptage (si le
+	 * fichier path2 est inexistant il va être créer si il existe son contenu va
+	 * être écraser )
 	 * 
 	 * @param path1
 	 * @param path2
@@ -181,7 +182,7 @@ public class FileClass {
 		AffichageClass.afficheConsole(
 				"Contenu du fichier : " + f1.getName() + " est bien copier dans le fichier : " + f2.getName());
 	}
-	
+
 	public static void decrypterFichier(String path) throws IOException {
 		File f1 = new File(path);
 		if (!f1.exists() && !f1.isDirectory()) {
@@ -192,15 +193,16 @@ public class FileClass {
 			exitVoidMethode();
 		}
 		FileReader fr = new FileReader(f1);
-		int numFile=4;
-		
-		File f2 = new File(f1.getParentFile()+"/File"+numFile+".txt");
-		while (f2.exists() && numFile < ITERATION_LIMITE) {
+		int numFile = 4;
+
+		File f2 = new File(f1.getParentFile() + "/File" + numFile + ".txt");
+		while (f2.exists() && numFile < ConstantLimitClass.ITERATION_LIMITE) {
 			numFile++;
-			f2 = new File(f1.getParentFile()+"/File"+numFile+".txt");
+			f2 = new File(f1.getParentFile() + "/File" + numFile + ".txt");
 		}
-		if (numFile == ITERATION_LIMITE) {
-			AffichageClass.afficheConsole("Impossible de décrypter le fichier (la création d'un fichier intermédiaire a échoué)");
+		if (numFile == ConstantLimitClass.ITERATION_LIMITE) {
+			AffichageClass.afficheConsole(
+					"Impossible de décrypter le fichier (la création d'un fichier intermédiaire a échoué)");
 			exitVoidMethode();
 		}
 		FileWriter fw = new FileWriter(f2);
@@ -212,28 +214,28 @@ public class FileClass {
 		fw.close();
 		copierFichierTextDansUnAutre(f2.getPath(), f1.getPath());
 		f2.delete();
-		AffichageClass.afficheConsole(
-				"Contenu du fichier : " + f1.getName() + " est bien décrypter.");
+		AffichageClass.afficheConsole("Contenu du fichier : " + f1.getName() + " est bien décrypter.");
 
 	}
-	
+
 	/**
 	 * Exemple de fonction de cryptage
+	 * 
 	 * @param c
 	 * @return
 	 */
 	private static int cryptage(int c) {
-		return ((c*c)*2+1);
+		return ((c * c) * 2 + 1);
 	}
-	
+
 	/**
 	 * Exemple de fonction de décryptage
+	 * 
 	 * @param c
 	 * @return
 	 */
 	private static int decryptage(int c) {
-		return (int) Math.sqrt((c-1)/2);
+		return (int) Math.sqrt((c - 1) / 2);
 	}
-	
 
 }
