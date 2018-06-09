@@ -1,10 +1,15 @@
 package fileProjet;
 
+
+import file.FileClass;
+
 public class FileProjet {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("");
+		
+		FileClass fileClass = new FileClass();
+		fileClass.afficheContenu("c:/");
+		fileClass.afficheContenu();
 	}
 
 }
