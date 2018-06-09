@@ -1,6 +1,7 @@
 package file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import entree_sortie.AffichageClass;
 import entree_sortie.SaisieClass;
 
 public class FileClass {
+	
+	private static final int ITERATION_LIMITE = 9999999;
 
 	/**
 	 * Affiche le contenu d’un répertoire en affichant si les éléments de ce
@@ -113,7 +116,7 @@ public class FileClass {
 	 * @throws IOException
 	 */
 	public static void copierFichierTextDansUnAutre(String path1, String path2) throws IOException {
-		File f1 = new File("ressources/File1.txt");
+		File f1 = new File(path1);
 		if (!f1.exists() && !f1.isDirectory()) {
 			if (!f1.exists())
 				AffichageClass.afficheConsole("File don't exist " + path1);
@@ -122,7 +125,7 @@ public class FileClass {
 			exitVoidMethode();
 		}
 		FileReader fr = new FileReader(f1);
-		File f2 = new File("ressources/File2.txt");
+		File f2 = new File(path2);
 		if (!f2.exists()) {
 			AffichageClass.afficheConsole("File or directory don't exist " + path2);
 			exitVoidMethode();
@@ -144,5 +147,93 @@ public class FileClass {
 	private static void exitVoidMethode() {
 		return;
 	}
+
+	/**
+	 * Copier le contenu du fichier path1 dans le fichier path2 avec cryptage (si le fichier path2
+	 * est inexistant il va être créer si il existe son contenu va être écraser )
+	 * 
+	 * @param path1
+	 * @param path2
+	 * @throws IOException
+	 */
+	public static void copierFichierTextDansUnAutreAvecCryptage(String path1, String path2) throws IOException {
+		File f1 = new File(path1);
+		if (!f1.exists() && !f1.isDirectory()) {
+			if (!f1.exists())
+				AffichageClass.afficheConsole("File don't exist " + path1);
+			else
+				AffichageClass.afficheConsole("Is not file");
+			exitVoidMethode();
+		}
+		FileReader fr = new FileReader(f1);
+		File f2 = new File(path2);
+		if (!f2.exists()) {
+			AffichageClass.afficheConsole("File or directory don't exist " + path2);
+			exitVoidMethode();
+		}
+		FileWriter fw = new FileWriter(f2);
+		int c;
+		while ((c = fr.read()) != -1) {
+			fw.write(cryptage(c));
+		}
+		fr.close();
+		fw.close();
+		AffichageClass.afficheConsole(
+				"Contenu du fichier : " + f1.getName() + " est bien copier dans le fichier : " + f2.getName());
+	}
+	
+	public static void decrypterFichier(String path) throws IOException {
+		File f1 = new File(path);
+		if (!f1.exists() && !f1.isDirectory()) {
+			if (!f1.exists())
+				AffichageClass.afficheConsole("File don't exist " + path);
+			else
+				AffichageClass.afficheConsole("Is not file");
+			exitVoidMethode();
+		}
+		FileReader fr = new FileReader(f1);
+		int numFile=4;
+		
+		File f2 = new File(f1.getParentFile()+"/File"+numFile+".txt");
+		while (f2.exists() && numFile < ITERATION_LIMITE) {
+			numFile++;
+			f2 = new File(f1.getParentFile()+"/File"+numFile+".txt");
+		}
+		if (numFile == ITERATION_LIMITE) {
+			AffichageClass.afficheConsole("Impossible de décrypter le fichier (la création d'un fichier intermédiaire a échoué)");
+			exitVoidMethode();
+		}
+		FileWriter fw = new FileWriter(f2);
+		int c;
+		while ((c = fr.read()) != -1) {
+			fw.write(decryptage(c));
+		}
+		fr.close();
+		fw.close();
+		copierFichierTextDansUnAutre(f2.getPath(), f1.getPath());
+		f2.delete();
+		AffichageClass.afficheConsole(
+				"Contenu du fichier : " + f1.getName() + " est bien décrypter.");
+
+	}
+	
+	/**
+	 * Exemple de fonction de cryptage
+	 * @param c
+	 * @return
+	 */
+	private static int cryptage(int c) {
+		return ((c*c)*2+1);
+	}
+	
+	/**
+	 * Exemple de fonction de décryptage
+	 * @param c
+	 * @return
+	 */
+	private static int decryptage(int c) {
+		return (int) Math.sqrt((c-1)/2);
+	}
+	
 
 }
